@@ -18,3 +18,7 @@ fun <T> Flow<T>.collectOnLifecycle(
         }
     }
 }
+
+fun Boolean.toYesOrNo(): String = if (this) "Yes" else "No"
+
+fun String.uppercaseFirstChar(): String = this.replaceFirstChar { it.uppercaseChar()}

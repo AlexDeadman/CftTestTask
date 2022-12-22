@@ -1,11 +1,13 @@
 package ru.alexdeadman.cfttesttask.ui.binmetadata
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.alexdeadman.cfttesttask.data.binlist.BinlistRepository
 import javax.inject.Inject
@@ -14,14 +16,16 @@ import javax.inject.Inject
 class BinMetadataViewModel @Inject constructor(
     private val repository: BinlistRepository
 ) : ViewModel() {
-    private val _binMetadataStateFlow = MutableStateFlow<BinMetadataState>(BinMetadataState.Default())
+    private val _binMetadataStateFlow = MutableStateFlow<BinMetadataState>(BinMetadataState.Default)
     val binMetadataStateFlow = _binMetadataStateFlow.asStateFlow()
 
     fun fetchBinMetadata(bin: String) {
-        _binMetadataStateFlow.value = BinMetadataState.Loading()
+        _binMetadataStateFlow.value = BinMetadataState.Loading
         viewModelScope.launch(Dispatchers.IO) {
             repository.fetchBinMetadata(bin)
-//                .catch { }
+                .catch {
+                    _binMetadataStateFlow.value = BinMetadataState.Error(it)
+                }
                 .collect {
                     _binMetadataStateFlow.value = BinMetadataState.Loaded(it)
                 }

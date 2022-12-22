@@ -1,18 +1,20 @@
 package ru.alexdeadman.cfttesttask.ui.binmetadata
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import dagger.hilt.android.AndroidEntryPoint
+import retrofit2.HttpException
+import ru.alexdeadman.cfttesttask.R
 import ru.alexdeadman.cfttesttask.collectOnLifecycle
 import ru.alexdeadman.cfttesttask.databinding.FragmentFirstBinding
+import ru.alexdeadman.cfttesttask.toYesOrNo
+import ru.alexdeadman.cfttesttask.uppercaseFirstChar
 
-/**
- * A simple [Fragment] subclass as the default destination in the navigation.
- */
 @AndroidEntryPoint
 class BinMetadataFragment : Fragment() {
 
@@ -30,23 +32,74 @@ class BinMetadataFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val binMetadataViewModel: BinMetadataViewModel by viewModels()
+        binding.apply {
 
-        binMetadataViewModel.binMetadataStateFlow
-            .collectOnLifecycle(viewLifecycleOwner) { state ->
-                when (state) {
-                    is BinMetadataState.Default -> {}
-                    is BinMetadataState.Loading -> { /*TODO*/ }
-                    is BinMetadataState.Loaded -> {
-                        binding.textviewFirst.text = state.result.toString()
+            val binMetadataViewModel: BinMetadataViewModel by viewModels()
+
+            binMetadataViewModel.binMetadataStateFlow
+                .collectOnLifecycle(viewLifecycleOwner) { state ->
+                    when (state) {
+                        is BinMetadataState.Default -> {}
+                        is BinMetadataState.Loading -> {
+                            progressBar.visibility = View.VISIBLE
+                        }
+                        is BinMetadataState.Loaded -> {
+                            state.result.let {
+                                listOf(
+                                    textViewScheme to it.scheme?.uppercaseFirstChar(),
+                                    textViewBrand to it.brand,
+                                    textViewType to it.type?.uppercaseFirstChar(),
+                                    textViewPrepaid to it.prepaid?.toYesOrNo(),
+                                    textViewLength to it.number?.length,
+                                    textViewLuhn to it.number?.luhn?.toYesOrNo(),
+                                    textViewCountryName to it.country?.emoji,
+                                    textViewCountryFlag to it.country?.name,
+                                    textViewLatitude to it.country?.latitude,
+                                    textViewLongitude to it.country?.longitude,
+                                    textViewBankName to it.bank?.name,
+                                    textViewBankCity to it.bank?.city,
+                                    textViewBankUrl to it.bank?.name,
+                                    textViewBankPhone to it.bank?.phone,
+                                ).forEach { pair ->
+                                    pair.first.text = pair.second?.toString() ?: "—"
+                                }
+                            }
+                            progressBar.visibility = View.GONE
+                            scrollView.visibility = View.VISIBLE
+                        }
+                        is BinMetadataState.Error -> {
+                            progressBar.visibility = View.GONE
+
+                            val messageId =
+                                if (
+                                    state.throwable is HttpException &&
+                                    state.throwable.code() == 404
+                                ) {
+                                    R.string.not_found
+                                } else {
+                                    R.string.unknown_error
+                                }
+
+                            Toast.makeText(
+                                requireContext(),
+                                messageId,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
                     }
-                    is BinMetadataState.Error -> { /*TODO*/ }
                 }
-            }
 
-        binding.buttonFirst.setOnClickListener {
-//            findNavController().navigate(R.id.action_FirstFragment_to_SecondFragment)
-            binMetadataViewModel.fetchBinMetadata("45717360")
+            tiEditText.setOnEditorActionListener { _, _, _ ->
+                val bin = tiEditText.text
+                if (!bin.isNullOrBlank() && """\d{4,}""".toRegex().matches(bin)) {
+                    binMetadataViewModel.fetchBinMetadata(bin.toString())
+                    tiLayout.error = null
+                } else {
+                    tiLayout.error = getString(R.string.incorrect_input)
+                    return@setOnEditorActionListener true
+                }
+                return@setOnEditorActionListener false
+            }
         }
     }
 
