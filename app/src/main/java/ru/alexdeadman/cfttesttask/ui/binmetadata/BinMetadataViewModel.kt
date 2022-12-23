@@ -14,10 +14,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 class BinMetadataViewModel @Inject constructor(
-    private val repository: BinlistRepository
+    private val repository: BinlistRepository,
 ) : ViewModel() {
+
     private val _binMetadataStateFlow = MutableStateFlow<BinMetadataState>(BinMetadataState.Default)
     val binMetadataStateFlow = _binMetadataStateFlow.asStateFlow()
+
+    private val _historyStateFlow = MutableStateFlow<HistoryState>(HistoryState.Default)
+    val historyStateFlow = _historyStateFlow.asStateFlow()
+
+    init {
+        fetchHistory()
+    }
 
     fun fetchBinMetadata(bin: String) {
         _binMetadataStateFlow.value = BinMetadataState.Loading
@@ -28,6 +36,21 @@ class BinMetadataViewModel @Inject constructor(
                 }
                 .collect {
                     _binMetadataStateFlow.value = BinMetadataState.Loaded(it)
+                }
+            fetchHistory()
+        }
+    }
+
+    private fun fetchHistory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.fetchHistory()
+                .catch {
+                    _historyStateFlow.value = HistoryState.Error(it)
+                }
+                .collect {
+                    _historyStateFlow.value = HistoryState.Loaded(
+                        it.map { entity -> entity.bin }.reversed()
+                    )
                 }
         }
     }

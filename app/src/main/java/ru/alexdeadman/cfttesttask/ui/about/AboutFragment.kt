@@ -1,4 +1,4 @@
-package ru.alexdeadman.cfttesttask.ui.history
+package ru.alexdeadman.cfttesttask.ui.about
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,18 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import ru.alexdeadman.cfttesttask.R
-import ru.alexdeadman.cfttesttask.databinding.FragmentSecondBinding
+import ru.alexdeadman.cfttesttask.databinding.FragmentAboutBinding
 
-class HistoryFragment : Fragment() {
+class AboutFragment : Fragment() {
 
-    private var _binding: FragmentSecondBinding? = null
+    private var _binding: FragmentAboutBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentSecondBinding.inflate(inflater, container, false)
+        _binding = FragmentAboutBinding.inflate(inflater, container, false)
         return binding.root
     }
 

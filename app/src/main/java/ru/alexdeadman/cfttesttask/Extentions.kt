@@ -1,5 +1,8 @@
 package ru.alexdeadman.cfttesttask
 
+import android.content.Context
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope

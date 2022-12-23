@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -11,21 +13,21 @@ import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.HttpException
 import ru.alexdeadman.cfttesttask.R
 import ru.alexdeadman.cfttesttask.collectOnLifecycle
-import ru.alexdeadman.cfttesttask.databinding.FragmentFirstBinding
+import ru.alexdeadman.cfttesttask.databinding.FragmentBinmetadataBinding
 import ru.alexdeadman.cfttesttask.toYesOrNo
 import ru.alexdeadman.cfttesttask.uppercaseFirstChar
 
 @AndroidEntryPoint
 class BinMetadataFragment : Fragment() {
 
-    private var _binding: FragmentFirstBinding? = null
+    private var _binding: FragmentBinmetadataBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        _binding = FragmentFirstBinding.inflate(inflater, container, false)
+        _binding = FragmentBinmetadataBinding.inflate(inflater, container, false)
         return binding.root
     }
 
@@ -36,11 +38,57 @@ class BinMetadataFragment : Fragment() {
 
             val binMetadataViewModel: BinMetadataViewModel by viewModels()
 
+            acTextView.apply {
+                setOnEditorActionListener { _, _, _ ->
+                    if (!text.isNullOrBlank() && """\d{4,}""".toRegex().matches(text)) {
+                        binMetadataViewModel.fetchBinMetadata(text.toString())
+                        clearFocus()
+                        tiLayout.error = null
+                        return@setOnEditorActionListener false
+                    } else {
+                        tiLayout.error = getString(R.string.incorrect_input)
+                        return@setOnEditorActionListener true
+                    }
+                }
+                setOnFocusChangeListener { v, hasFocus ->
+                    v.post { // bypassing WindowManager$BadTokenException
+                        if (hasFocus) showDropDown()
+                    }
+                }
+                setOnItemClickListener { _, _, _, _ ->
+                    onEditorAction(EditorInfo.IME_ACTION_DONE)
+                }
+            }
+
+            binMetadataViewModel.historyStateFlow
+                .collectOnLifecycle(viewLifecycleOwner) { state ->
+                    when (state) {
+                        HistoryState.Default -> {}
+                        is HistoryState.Loaded -> {
+                            acTextView.setAdapter(
+                                ArrayAdapter(
+                                    requireContext(),
+                                    android.R.layout.simple_spinner_dropdown_item,
+                                    state.result
+                                )
+                            )
+                        }
+                        is HistoryState.Error -> {
+                            Toast.makeText(
+                                requireContext(),
+                                R.string.cant_load_history,
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    }
+                }
+
             binMetadataViewModel.binMetadataStateFlow
                 .collectOnLifecycle(viewLifecycleOwner) { state ->
                     when (state) {
-                        is BinMetadataState.Default -> {}
-                        is BinMetadataState.Loading -> {
+                        BinMetadataState.Default -> {}
+                        BinMetadataState.Loading -> {
+                            textView.visibility = View.GONE
                             progressBar.visibility = View.VISIBLE
                         }
                         is BinMetadataState.Loaded -> {
@@ -50,15 +98,15 @@ class BinMetadataFragment : Fragment() {
                                     textViewBrand to it.brand,
                                     textViewType to it.type?.uppercaseFirstChar(),
                                     textViewPrepaid to it.prepaid?.toYesOrNo(),
-                                    textViewLength to it.number?.length,
-                                    textViewLuhn to it.number?.luhn?.toYesOrNo(),
-                                    textViewCountryName to it.country?.emoji,
-                                    textViewCountryFlag to it.country?.name,
-                                    textViewLatitude to it.country?.latitude,
-                                    textViewLongitude to it.country?.longitude,
+                                    textViewNumberLength to it.number?.length,
+                                    textViewNumberLuhn to it.number?.luhn?.toYesOrNo(),
+                                    textViewCountryName to it.country?.name,
+                                    textViewCountryFlag to it.country?.emoji,
+                                    textViewCountryLatitude to it.country?.latitude,
+                                    textViewCountryLongitude to it.country?.longitude,
                                     textViewBankName to it.bank?.name,
                                     textViewBankCity to it.bank?.city,
-                                    textViewBankUrl to it.bank?.name,
+                                    textViewBankUrl to it.bank?.url,
                                     textViewBankPhone to it.bank?.phone,
                                 ).forEach { pair ->
                                     pair.first.text = pair.second?.toString() ?: "—"
@@ -88,18 +136,6 @@ class BinMetadataFragment : Fragment() {
                         }
                     }
                 }
-
-            tiEditText.setOnEditorActionListener { _, _, _ ->
-                val bin = tiEditText.text
-                if (!bin.isNullOrBlank() && """\d{4,}""".toRegex().matches(bin)) {
-                    binMetadataViewModel.fetchBinMetadata(bin.toString())
-                    tiLayout.error = null
-                } else {
-                    tiLayout.error = getString(R.string.incorrect_input)
-                    return@setOnEditorActionListener true
-                }
-                return@setOnEditorActionListener false
-            }
         }
     }
 

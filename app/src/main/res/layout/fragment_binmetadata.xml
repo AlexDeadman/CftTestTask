@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -16,6 +15,15 @@
         android:visibility="gone"
         tools:visibility="visible" />
 
+    <TextView
+        android:id="@+id/text_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/enter_a_bin"
+        android:textSize="18sp"
+        tools:visibility="visible" />
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -24,22 +32,21 @@
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/ti_layout"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.Dense.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
+            android:hint="@string/bin_hint"
             app:endIconMode="clear_text"
             app:errorEnabled="true">
 
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/ti_edit_text"
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/ac_text_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:hint="@string/bin_hint"
-                android:imeOptions="actionSearch"
+                android:imeOptions="actionDone"
                 android:inputType="numberDecimal"
-                android:text="45717360"
                 android:textSize="18sp" />
 
         </com.google.android.material.textfield.TextInputLayout>
@@ -71,24 +78,36 @@
                 <TextView
                     android:id="@+id/text_view_scheme"
                     android:layout_height="wrap_content"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="Visa" />
 
                 <TextView android:text="@string/brand" />
 
                 <TextView
                     android:id="@+id/text_view_brand"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="Visa/Dankort" />
 
                 <TextView android:text="@string/type" />
 
                 <TextView
                     android:id="@+id/text_view_type"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="Debit" />
 
                 <TextView android:text="@string/prepaid" />
 
                 <TextView
                     android:id="@+id/text_view_prepaid"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="No" />
 
                 <TextView
@@ -101,13 +120,19 @@
                 <TextView android:text="@string/length" />
 
                 <TextView
-                    android:id="@+id/text_view_length"
+                    android:id="@+id/text_view_number_length"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="16" />
 
                 <TextView android:text="@string/luhn" />
 
                 <TextView
-                    android:id="@+id/text_view_luhn"
+                    android:id="@+id/text_view_number_luhn"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="Yes" />
 
                 <TextView
@@ -121,24 +146,36 @@
 
                 <TextView
                     android:id="@+id/text_view_country_name"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="Denmark" />
 
                 <TextView android:text="@string/flag" />
 
                 <TextView
                     android:id="@+id/text_view_country_flag"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="🇩🇰" />
 
                 <TextView android:text="@string/latitude" />
 
                 <TextView
-                    android:id="@+id/text_view_latitude"
+                    android:id="@+id/text_view_country_latitude"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="56" />
 
                 <TextView android:text="@string/longitude" />
 
                 <TextView
-                    android:id="@+id/text_view_longitude"
+                    android:id="@+id/text_view_country_longitude"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="10" />
 
                 <TextView
@@ -152,24 +189,36 @@
 
                 <TextView
                     android:id="@+id/text_view_bank_name"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="Jyske Bank" />
 
                 <TextView android:text="@string/city" />
 
                 <TextView
                     android:id="@+id/text_view_bank_city"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="Hjørring" />
 
                 <TextView android:text="@string/url" />
 
                 <TextView
                     android:id="@+id/text_view_bank_url"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="www.jyskebank.dk" />
 
                 <TextView android:text="@string/phone" />
 
                 <TextView
                     android:id="@+id/text_view_bank_phone"
+                    android:layout_gravity="end"
+                    android:textAlignment="textEnd"
+                    android:maxWidth="180dp"
                     tools:text="+4589893300" />
             </GridLayout>
         </ScrollView>

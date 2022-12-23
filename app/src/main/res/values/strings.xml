@@ -12,7 +12,7 @@
     <string name="search">Search</string>
     <string name="bin_hint">BIN</string>
     <string name="general">GENERAL</string>
-    <string name="scheme_network">SCHEME / NETWORK</string>
+    <string name="scheme_network">SCHEME/NETWORK</string>
     <string name="brand">BRAND</string>
     <string name="type">TYPE</string>
     <string name="prepaid">PREPAID</string>
@@ -34,4 +34,6 @@
     <string name="city">CITY</string>
     <string name="url">URL</string>
     <string name="phone">PHONE</string>
+    <string name="cant_load_history">Can\'t load history</string>
+    <string name="enter_a_bin">Enter a BIN</string>
 </resources>
