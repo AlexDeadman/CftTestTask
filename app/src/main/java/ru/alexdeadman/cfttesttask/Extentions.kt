@@ -1,8 +1,12 @@
 package ru.alexdeadman.cfttesttask
 
 import android.content.Context
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
+import android.content.Intent
+import android.net.Uri
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.URLSpan
+import android.widget.TextView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -13,15 +17,44 @@ import kotlinx.coroutines.launch
 
 fun <T> Flow<T>.collectOnLifecycle(
     lifecycleOwner: LifecycleOwner,
+    state: Lifecycle.State,
     collector: FlowCollector<T>
 ) {
     lifecycleOwner.lifecycleScope.launch {
-        lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.repeatOnLifecycle(state) {
             collect(collector)
         }
     }
 }
 
-fun Boolean.toYesOrNo(): String = if (this) "Yes" else "No"
+fun String?.uppercaseFirstChar(): String? = this?.replaceFirstChar { it.uppercaseChar() }
 
-fun String.uppercaseFirstChar(): String = this.replaceFirstChar { it.uppercaseChar()}
+fun Boolean?.toYesOrNo(): String? = this?.let { if (this) "Yes" else "No" }
+
+fun TextView.toHyperlink(): TextView {
+    setText(
+        SpannableString(text).apply {
+            setSpan(
+                URLSpan(""),
+                0,
+                length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
+        },
+        TextView.BufferType.SPANNABLE
+    )
+    return this
+}
+
+fun TextView.toGeoLink(context: Context, query: String): TextView {
+    toHyperlink()
+    setOnClickListener {
+        context.startActivity(
+            Intent(
+                Intent.ACTION_VIEW,
+                Uri.parse("geo:?q=${query}")
+            )
+        )
+    }
+    return this
+}

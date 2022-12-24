@@ -9,13 +9,12 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.HttpException
-import ru.alexdeadman.cfttesttask.R
-import ru.alexdeadman.cfttesttask.collectOnLifecycle
+import ru.alexdeadman.cfttesttask.*
 import ru.alexdeadman.cfttesttask.databinding.FragmentBinmetadataBinding
-import ru.alexdeadman.cfttesttask.toYesOrNo
-import ru.alexdeadman.cfttesttask.uppercaseFirstChar
+import java.net.HttpURLConnection
 
 @AndroidEntryPoint
 class BinMetadataFragment : Fragment() {
@@ -61,7 +60,10 @@ class BinMetadataFragment : Fragment() {
             }
 
             binMetadataViewModel.historyStateFlow
-                .collectOnLifecycle(viewLifecycleOwner) { state ->
+                .collectOnLifecycle(
+                    viewLifecycleOwner,
+                    Lifecycle.State.STARTED
+                ) { state ->
                     when (state) {
                         HistoryState.Default -> {}
                         is HistoryState.Loaded -> {
@@ -84,7 +86,10 @@ class BinMetadataFragment : Fragment() {
                 }
 
             binMetadataViewModel.binMetadataStateFlow
-                .collectOnLifecycle(viewLifecycleOwner) { state ->
+                .collectOnLifecycle(
+                    viewLifecycleOwner,
+                    Lifecycle.State.STARTED
+                ) { state ->
                     when (state) {
                         BinMetadataState.Default -> {}
                         BinMetadataState.Loading -> {
@@ -92,26 +97,36 @@ class BinMetadataFragment : Fragment() {
                             progressBar.visibility = View.VISIBLE
                         }
                         is BinMetadataState.Loaded -> {
-                            state.result.let {
+                            state.result.let { bmt ->
                                 listOf(
-                                    textViewScheme to it.scheme?.uppercaseFirstChar(),
-                                    textViewBrand to it.brand,
-                                    textViewType to it.type?.uppercaseFirstChar(),
-                                    textViewPrepaid to it.prepaid?.toYesOrNo(),
-                                    textViewNumberLength to it.number?.length,
-                                    textViewNumberLuhn to it.number?.luhn?.toYesOrNo(),
-                                    textViewCountryName to it.country?.name,
-                                    textViewCountryFlag to it.country?.emoji,
-                                    textViewCountryLatitude to it.country?.latitude,
-                                    textViewCountryLongitude to it.country?.longitude,
-                                    textViewBankName to it.bank?.name,
-                                    textViewBankCity to it.bank?.city,
-                                    textViewBankUrl to it.bank?.url,
-                                    textViewBankPhone to it.bank?.phone,
-                                ).forEach { pair ->
-                                    pair.first.text = pair.second?.toString() ?: "—"
+                                    textViewScheme to bmt.scheme?.uppercaseFirstChar(),
+                                    textViewBrand to bmt.brand,
+                                    textViewType to bmt.type?.uppercaseFirstChar(),
+                                    textViewPrepaid to bmt.prepaid?.toYesOrNo(),
+                                    textViewNumberLength to bmt.number?.length?.toString(),
+                                    textViewNumberLuhn to bmt.number?.luhn?.toYesOrNo(),
+                                    textViewCountryName to bmt.country?.name,
+                                    textViewCountryFlag to bmt.country?.emoji,
+                                    textViewCountryLatitude to bmt.country?.latitude?.toString(),
+                                    textViewCountryLongitude to bmt.country?.longitude?.toString(),
+                                    textViewBankName to bmt.bank?.name,
+                                    textViewBankCity to bmt.bank?.city,
+                                    textViewBankUrl to bmt.bank?.url,
+                                    textViewBankPhone to bmt.bank?.phone,
+                                ).forEach {
+                                    it.first.text = it.second ?: "—"
+                                }
+
+                                textViewCountryName.apply {
+                                    setOnClickListener { }
+                                    bmt.country?.name?.let { toGeoLink(requireContext(), it) }
+                                }
+                                textViewBankCity.apply {
+                                    setOnClickListener { }
+                                    bmt.bank?.city?.let { toGeoLink(requireContext(), it) }
                                 }
                             }
+
                             progressBar.visibility = View.GONE
                             scrollView.visibility = View.VISIBLE
                         }
@@ -119,13 +134,14 @@ class BinMetadataFragment : Fragment() {
                             progressBar.visibility = View.GONE
 
                             val messageId =
-                                if (
-                                    state.throwable is HttpException &&
-                                    state.throwable.code() == 404
-                                ) {
-                                    R.string.not_found
-                                } else {
-                                    R.string.unknown_error
+                                when (state.throwable) {
+                                    is HttpException -> {
+                                        when (state.throwable.code()) {
+                                            HttpURLConnection.HTTP_NOT_FOUND -> R.string.not_found
+                                            else -> R.string.unknown_error
+                                        }
+                                    }
+                                    else -> R.string.unknown_error
                                 }
 
                             Toast.makeText(

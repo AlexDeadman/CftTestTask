@@ -206,6 +206,7 @@
                 <TextView android:text="@string/url" />
 
                 <TextView
+                    android:autoLink="web"
                     android:id="@+id/text_view_bank_url"
                     android:layout_gravity="end"
                     android:textAlignment="textEnd"
@@ -215,6 +216,7 @@
                 <TextView android:text="@string/phone" />
 
                 <TextView
+                    android:autoLink="phone"
                     android:id="@+id/text_view_bank_phone"
                     android:layout_gravity="end"
                     android:textAlignment="textEnd"
