@@ -1,16 +1,8 @@
 <resources>
     <string name="app_name">CftTestTask</string>
-    <string name="action_settings">Settings</string>
-    <!-- Strings used for fragments for navigation -->
-    <string name="first_fragment_label">First Fragment</string>
-    <string name="second_fragment_label">Second Fragment</string>
-    <string name="next">Next</string>
-    <string name="previous">Previous</string>
-
-    <string name="hello_first_fragment">Hello first fragment</string>
-    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
-    <string name="search">Search</string>
-    <string name="bin_hint">BIN</string>
+    <string name="bin_metadata">BIN Metadata</string>
+    <string name="about">About</string>
+    <string name="bin">BIN</string>
     <string name="general">GENERAL</string>
     <string name="scheme_network">SCHEME/NETWORK</string>
     <string name="brand">BRAND</string>
@@ -20,10 +12,7 @@
     <string name="length">LENGTH</string>
     <string name="luhn">LUHN</string>
     <string name="country">COUNTRY</string>
-    <string name="country_name">%s %s</string>
-    <string name="coordinates">(latitude: %s, longitude: %s)</string>
     <string name="bank">BANK</string>
-    <string name="bank_name_city">%s, %s</string>
     <string name="incorrect_input">Incorrect input</string>
     <string name="not_found">Not found</string>
     <string name="unknown_error">Unknown error</string>
@@ -36,4 +25,7 @@
     <string name="phone">PHONE</string>
     <string name="cant_load_history">Can\'t load history</string>
     <string name="enter_a_bin">Enter a BIN</string>
+    <string name="bin_desc">The first 6 or 8 digits of a payment card number.</string>
+    <string name="luhn_desc">Luhn algorithm, checksum formula used to validate identification number.</string>
+    <string name="prepaid_desc">Payment card with a monetary value stored on the card itself, not in an external financial institution.</string>
 </resources>

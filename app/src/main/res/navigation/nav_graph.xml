@@ -8,6 +8,7 @@
     <fragment
         android:id="@+id/BinmetadataFragment"
         android:name="ru.alexdeadman.cfttesttask.ui.binmetadata.BinMetadataFragment"
+        android:label="@string/bin_metadata"
         tools:layout="@layout/fragment_binmetadata">
 
         <action
@@ -17,6 +18,7 @@
     <fragment
         android:id="@+id/AboutFragment"
         android:name="ru.alexdeadman.cfttesttask.ui.about.AboutFragment"
+        android:label="@string/about"
         tools:layout="@layout/fragment_about">
 
         <action

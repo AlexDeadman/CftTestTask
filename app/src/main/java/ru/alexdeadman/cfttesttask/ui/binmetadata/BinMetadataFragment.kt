@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.appcompat.widget.TooltipCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -93,7 +94,7 @@ class BinMetadataFragment : Fragment() {
                     when (state) {
                         BinMetadataState.Default -> {}
                         BinMetadataState.Loading -> {
-                            textView.visibility = View.GONE
+                            textViewMessage.visibility = View.GONE
                             progressBar.visibility = View.VISIBLE
                         }
                         is BinMetadataState.Loaded -> {
@@ -117,16 +118,18 @@ class BinMetadataFragment : Fragment() {
                                     it.first.text = it.second ?: "—"
                                 }
 
-                                textViewCountryName.apply {
-                                    setOnClickListener { }
-                                    bmt.country?.name?.let { toGeoLink(requireContext(), it) }
-                                }
-                                textViewBankCity.apply {
-                                    setOnClickListener { }
-                                    bmt.bank?.city?.let { toGeoLink(requireContext(), it) }
+                                listOf(
+                                    textViewCountryName to bmt.country?.name,
+                                    textViewBankCity to bmt.bank?.city,
+                                ).forEach { pair ->
+                                    pair.first.apply {
+                                        setOnClickListener { }
+                                        pair.second?.let { toGeoLink(requireContext(), it) }
+                                    }
                                 }
                             }
 
+                            textViewMessage.visibility = View.GONE
                             progressBar.visibility = View.GONE
                             scrollView.visibility = View.VISIBLE
                         }
@@ -152,6 +155,14 @@ class BinMetadataFragment : Fragment() {
                         }
                     }
                 }
+
+            listOf(
+                textViewMessage to R.string.bin_desc,
+                textViewNumberLuhnTitle to R.string.luhn_desc,
+                textViewPrepaidTitle to R.string.prepaid_desc,
+            ).forEach {
+                TooltipCompat.setTooltipText(it.first, getString(it.second))
+            }
         }
     }
 
