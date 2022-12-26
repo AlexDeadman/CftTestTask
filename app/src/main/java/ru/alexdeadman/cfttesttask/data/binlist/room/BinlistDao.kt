@@ -10,6 +10,9 @@ interface BinlistDao {
     @Query("select * from ${BinEntity.TABLE_NAME}")
     suspend fun loadHistory(): List<BinEntity>
 
+    @Query("delete from ${BinEntity.TABLE_NAME}")
+    suspend fun clearHistory()
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     @JvmSuppressWildcards
     suspend fun saveBin(binEntity: BinEntity)

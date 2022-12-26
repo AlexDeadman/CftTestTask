@@ -1,6 +1,5 @@
 package ru.alexdeadman.cfttesttask.ui.binmetadata
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -10,6 +9,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
 import ru.alexdeadman.cfttesttask.data.binlist.BinlistRepository
+import ru.alexdeadman.cfttesttask.ui.binmetadata.states.BinMetadataState
+import ru.alexdeadman.cfttesttask.ui.binmetadata.states.HistoryState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -52,6 +53,19 @@ class BinMetadataViewModel @Inject constructor(
                         it.map { entity -> entity.bin }.reversed()
                     )
                 }
+        }
+    }
+
+    fun clearHistory() {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.clearHistory()
+                .catch {
+                    _historyStateFlow.value = HistoryState.Error(it)
+                }
+                .collect {
+                    _historyStateFlow.value = HistoryState.Cleared()
+                }
+            fetchHistory()
         }
     }
 }

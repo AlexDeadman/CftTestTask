@@ -7,6 +7,10 @@ class RoomBinlistDatasource(
 ) : BinlistLocalDataSource {
     override suspend fun loadHistory(): List<BinEntity> = binlistDao.loadHistory()
 
+    override suspend fun clearHistory() {
+        binlistDao.clearHistory()
+    }
+
     override suspend fun saveBin(bin: String) {
         binlistDao.saveBin(BinEntity(bin))
     }

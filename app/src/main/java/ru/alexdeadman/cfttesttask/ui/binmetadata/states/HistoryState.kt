@@ -1,9 +1,9 @@
-package ru.alexdeadman.cfttesttask.ui.binmetadata
+package ru.alexdeadman.cfttesttask.ui.binmetadata.states
 
-import ru.alexdeadman.cfttesttask.data.binlist.retrofit.binmetadata.BinMetadata
-
+@Suppress("CanSealedSubClassBeObject")
 sealed class HistoryState {
     object Default : HistoryState()
     class Loaded (val result: List<String>): HistoryState()
+    class Cleared : HistoryState()
     class Error (val throwable: Throwable) : HistoryState()
 }

@@ -10,19 +10,13 @@
         android:name="ru.alexdeadman.cfttesttask.ui.binmetadata.BinMetadataFragment"
         android:label="@string/bin_metadata"
         tools:layout="@layout/fragment_binmetadata">
-
         <action
-            android:id="@+id/action_FirstFragment_to_SecondFragment"
+            android:id="@+id/action_BinmetadataFragment_to_AboutFragment"
             app:destination="@id/AboutFragment" />
     </fragment>
     <fragment
         android:id="@+id/AboutFragment"
         android:name="ru.alexdeadman.cfttesttask.ui.about.AboutFragment"
         android:label="@string/about"
-        tools:layout="@layout/fragment_about">
-
-        <action
-            android:id="@+id/action_SecondFragment_to_FirstFragment"
-            app:destination="@id/BinmetadataFragment" />
-    </fragment>
+        tools:layout="@layout/fragment_about"/>
 </navigation>

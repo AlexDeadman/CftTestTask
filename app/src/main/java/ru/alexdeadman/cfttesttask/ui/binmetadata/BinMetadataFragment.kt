@@ -1,20 +1,21 @@
 package ru.alexdeadman.cfttesttask.ui.binmetadata
 
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.appcompat.widget.TooltipCompat
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
+import androidx.navigation.fragment.findNavController
 import dagger.hilt.android.AndroidEntryPoint
 import retrofit2.HttpException
 import ru.alexdeadman.cfttesttask.*
 import ru.alexdeadman.cfttesttask.databinding.FragmentBinmetadataBinding
+import ru.alexdeadman.cfttesttask.ui.binmetadata.states.BinMetadataState
+import ru.alexdeadman.cfttesttask.ui.binmetadata.states.HistoryState
 import java.net.HttpURLConnection
 
 @AndroidEntryPoint
@@ -22,6 +23,8 @@ class BinMetadataFragment : Fragment() {
 
     private var _binding: FragmentBinmetadataBinding? = null
     private val binding get() = _binding!!
+
+    private val binMetadataViewModel: BinMetadataViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,11 +37,13 @@ class BinMetadataFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupMenu()
+
+        collectHistoryState()
+        collectBinMetadataState()
+
         binding.apply {
-
-            val binMetadataViewModel: BinMetadataViewModel by viewModels()
-
-            acTextView.apply {
+            autoCompleteTextViewBin.apply {
                 setOnEditorActionListener { _, _, _ ->
                     if (!text.isNullOrBlank() && """\d{4,}""".toRegex().matches(text)) {
                         binMetadataViewModel.fetchBinMetadata(text.toString())
@@ -60,6 +65,44 @@ class BinMetadataFragment : Fragment() {
                 }
             }
 
+            listOf(
+                textViewMessage to R.string.bin_desc,
+                textViewNumberLuhnTitle to R.string.luhn_desc,
+                textViewPrepaidTitle to R.string.prepaid_desc,
+            ).forEach {
+                TooltipCompat.setTooltipText(it.first, getString(it.second))
+            }
+        }
+    }
+
+    private fun setupMenu() {
+        requireActivity().addMenuProvider(
+            object : MenuProvider {
+                override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                    menuInflater.inflate(R.menu.menu_binmetadata, menu)
+                }
+
+                override fun onMenuItemSelected(menuItem: MenuItem): Boolean =
+                    when (menuItem.itemId) {
+                        R.id.action_clear_history -> {
+                            binMetadataViewModel.clearHistory()
+                            true
+                        }
+                        R.id.action_about -> {
+                            findNavController().navigate(
+                                R.id.action_BinmetadataFragment_to_AboutFragment
+                            )
+                            true
+                        }
+                        else -> false
+                    }
+            },
+            viewLifecycleOwner
+        )
+    }
+
+    private fun collectHistoryState() {
+        binding.apply {
             binMetadataViewModel.historyStateFlow
                 .collectOnLifecycle(
                     viewLifecycleOwner,
@@ -68,7 +111,7 @@ class BinMetadataFragment : Fragment() {
                     when (state) {
                         HistoryState.Default -> {}
                         is HistoryState.Loaded -> {
-                            acTextView.setAdapter(
+                            autoCompleteTextViewBin.setAdapter(
                                 ArrayAdapter(
                                     requireContext(),
                                     android.R.layout.simple_spinner_dropdown_item,
@@ -76,16 +119,19 @@ class BinMetadataFragment : Fragment() {
                                 )
                             )
                         }
+                        is HistoryState.Cleared -> {
+                            showToast(R.string.history_cleared)
+                        }
                         is HistoryState.Error -> {
-                            Toast.makeText(
-                                requireContext(),
-                                R.string.cant_load_history,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            showToast(R.string.history_operation_failed)
                         }
                     }
                 }
+        }
+    }
 
+    private fun collectBinMetadataState() {
+        binding.apply {
             binMetadataViewModel.binMetadataStateFlow
                 .collectOnLifecycle(
                     viewLifecycleOwner,
@@ -147,22 +193,10 @@ class BinMetadataFragment : Fragment() {
                                     else -> R.string.unknown_error
                                 }
 
-                            Toast.makeText(
-                                requireContext(),
-                                messageId,
-                                Toast.LENGTH_SHORT
-                            ).show()
+                            showToast(messageId)
                         }
                     }
                 }
-
-            listOf(
-                textViewMessage to R.string.bin_desc,
-                textViewNumberLuhnTitle to R.string.luhn_desc,
-                textViewPrepaidTitle to R.string.prepaid_desc,
-            ).forEach {
-                TooltipCompat.setTooltipText(it.first, getString(it.second))
-            }
         }
     }
 

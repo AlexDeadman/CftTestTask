@@ -17,4 +17,8 @@ class BinlistRepository(
     fun fetchHistory(): Flow<List<BinEntity>> = flow {
         emit(binlistLocalDataSource.loadHistory())
     }
+
+    fun clearHistory(): Flow<Unit> = flow {
+        emit(binlistLocalDataSource.clearHistory())
+    }
 }

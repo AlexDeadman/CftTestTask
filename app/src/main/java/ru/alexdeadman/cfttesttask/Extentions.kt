@@ -7,6 +7,8 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.URLSpan
 import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.lifecycleScope
@@ -25,6 +27,10 @@ fun <T> Flow<T>.collectOnLifecycle(
             collect(collector)
         }
     }
+}
+
+fun Fragment.showToast(resId: Int) {
+    Toast.makeText(requireContext(), resId, Toast.LENGTH_SHORT).show()
 }
 
 fun String?.uppercaseFirstChar(): String? = this?.replaceFirstChar { it.uppercaseChar() }
