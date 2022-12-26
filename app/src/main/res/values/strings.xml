@@ -1,40 +1,55 @@
 <resources>
     <string name="app_name">CftTestTask</string>
+
     <string name="bin_metadata">BIN Metadata</string>
     <string name="about">About</string>
+
+    <string name="enter_a_bin">Enter a BIN</string>
+
     <string name="bin">BIN</string>
-    <string name="general">GENERAL</string>
-    <string name="scheme_network">SCHEME/NETWORK</string>
-    <string name="brand">BRAND</string>
-    <string name="type">TYPE</string>
-    <string name="prepaid">PREPAID</string>
-    <string name="card_number">CARD NUMBER</string>
-    <string name="length">LENGTH</string>
-    <string name="luhn">LUHN</string>
-    <string name="country">COUNTRY</string>
-    <string name="bank">BANK</string>
     <string name="incorrect_input">Incorrect input</string>
+
     <string name="not_found">Not found</string>
     <string name="unknown_error">Unknown error</string>
-    <string name="name">NAME</string>
-    <string name="flag">FLAG</string>
-    <string name="latitude">LATITUDE</string>
-    <string name="longitude">LONGITUDE</string>
-    <string name="city">CITY</string>
-    <string name="url">URL</string>
-    <string name="phone">PHONE</string>
+    <string name="history_cleared">History cleared</string>
     <string name="history_operation_failed">History operation failed</string>
-    <string name="enter_a_bin">Enter a BIN</string>
+
+    <string name="general_section">GENERAL</string>
+    <string name="card_number_section">CARD NUMBER</string>
+    <string name="country_section">COUNTRY</string>
+    <string name="bank_section">BANK</string>
+
+    <string name="scheme_network_title">SCHEME / NETWORK</string>
+    <string name="brand_title">BRAND</string>
+    <string name="type_title">TYPE</string>
+    <string name="prepaid_title">PREPAID</string>
+    <string name="number_length_title">LENGTH</string>
+    <string name="number_luhn_title">LUHN</string>
+    <string name="country_name_title">COUNTRY NAME</string>
+    <string name="country_flag_title">FLAG</string>
+    <string name="country_latitude_title">LATITUDE</string>
+    <string name="country_longitude_title">LONGITUDE</string>
+    <string name="bank_name_title">BANK NAME</string>
+    <string name="bank_city_title">CITY</string>
+    <string name="bank_url_title">URL</string>
+    <string name="bank_phone_title">PHONE</string>
+
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+
     <string name="bin_desc">The first 6 or 8 digits of a payment card number.</string>
     <string name="luhn_desc">Luhn algorithm, checksum formula used to validate identification number.</string>
     <string name="prepaid_desc">Payment card with a monetary value stored on the card itself, not in an external financial institution.</string>
-    <string name="history_cleared">History cleared</string>
+
     <string name="clear_history">Clear history</string>
+
     <string name="cft_logo">CFT Logo</string>
+
     <string name="about_main_title">Test task for project SHIFT, CFT group</string>
     <string name="repository_link">Repository: github.com/AlexDeadman/CftTestTask</string>
     <string name="api_link">Used API: binlist.net</string>
     <string name="architecture">Architecture: MVVM, Single activity</string>
     <string name="libraries">Libraries: Retrofit, Hilt, Room</string>
+
     <string name="version">Version: %s</string>
+    <string name="copied">Copied</string>
 </resources>

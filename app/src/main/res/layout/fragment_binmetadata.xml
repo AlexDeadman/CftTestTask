@@ -70,12 +70,13 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="10dp"
-                    android:text="@string/general"
+                    android:text="@string/general_section"
                     android:textStyle="bold" />
 
                 <TextView
+                    android:id="@+id/text_view_scheme_title"
                     android:layout_marginEnd="10dp"
-                    android:text="@string/scheme_network" />
+                    android:text="@string/scheme_network_title" />
 
                 <TextView
                     android:id="@+id/text_view_scheme"
@@ -86,7 +87,9 @@
                     android:textIsSelectable="true"
                     tools:text="Visa" />
 
-                <TextView android:text="@string/brand" />
+                <TextView
+                    android:id="@+id/text_view_brand_title"
+                    android:text="@string/brand_title" />
 
                 <TextView
                     android:id="@+id/text_view_brand"
@@ -96,7 +99,9 @@
                     android:textIsSelectable="true"
                     tools:text="Visa/Dankort" />
 
-                <TextView android:text="@string/type" />
+                <TextView
+                    android:id="@+id/text_view_type_title"
+                    android:text="@string/type_title" />
 
                 <TextView
                     android:id="@+id/text_view_type"
@@ -109,7 +114,7 @@
                 <TextView
                     android:id="@+id/text_view_prepaid_title"
                     android:drawablePadding="2dp"
-                    android:text="@string/prepaid"
+                    android:text="@string/prepaid_title"
                     app:drawableEndCompat="@drawable/ic_info_14" />
 
                 <TextView
@@ -124,10 +129,12 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="10dp"
-                    android:text="@string/card_number"
+                    android:text="@string/card_number_section"
                     android:textStyle="bold" />
 
-                <TextView android:text="@string/length" />
+                <TextView
+                    android:id="@+id/text_view_number_length_title"
+                    android:text="@string/number_length_title" />
 
                 <TextView
                     android:id="@+id/text_view_number_length"
@@ -140,7 +147,7 @@
                 <TextView
                     android:id="@+id/text_view_number_luhn_title"
                     android:drawablePadding="2dp"
-                    android:text="@string/luhn"
+                    android:text="@string/number_luhn_title"
                     app:drawableEndCompat="@drawable/ic_info_14" />
 
                 <TextView
@@ -155,10 +162,12 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="10dp"
-                    android:text="@string/country"
+                    android:text="@string/country_section"
                     android:textStyle="bold" />
 
-                <TextView android:text="@string/name" />
+                <TextView
+                    android:id="@+id/text_view_country_name_title"
+                    android:text="@string/country_name_title" />
 
                 <TextView
                     android:id="@+id/text_view_country_name"
@@ -168,7 +177,9 @@
                     android:textIsSelectable="true"
                     tools:text="Denmark" />
 
-                <TextView android:text="@string/flag" />
+                <TextView
+                    android:id="@+id/text_view_country_flag_title"
+                    android:text="@string/country_flag_title" />
 
                 <TextView
                     android:id="@+id/text_view_country_flag"
@@ -178,7 +189,9 @@
                     android:textIsSelectable="true"
                     tools:text="🇩🇰" />
 
-                <TextView android:text="@string/latitude" />
+                <TextView
+                    android:id="@+id/text_view_country_latitude_title"
+                    android:text="@string/country_latitude_title" />
 
                 <TextView
                     android:id="@+id/text_view_country_latitude"
@@ -188,7 +201,9 @@
                     android:textIsSelectable="true"
                     tools:text="56" />
 
-                <TextView android:text="@string/longitude" />
+                <TextView
+                    android:id="@+id/text_view_country_longitude_title"
+                    android:text="@string/country_longitude_title" />
 
                 <TextView
                     android:id="@+id/text_view_country_longitude"
@@ -202,10 +217,12 @@
                     android:layout_columnSpan="2"
                     android:layout_gravity="center_horizontal"
                     android:layout_margin="10dp"
-                    android:text="@string/bank"
+                    android:text="@string/bank_section"
                     android:textStyle="bold" />
 
-                <TextView android:text="@string/name" />
+                <TextView
+                    android:id="@+id/text_view_bank_name_title"
+                    android:text="@string/bank_name_title" />
 
                 <TextView
                     android:id="@+id/text_view_bank_name"
@@ -215,7 +232,9 @@
                     android:textIsSelectable="true"
                     tools:text="Jyske Bank" />
 
-                <TextView android:text="@string/city" />
+                <TextView
+                    android:id="@+id/text_view_bank_city_title"
+                    android:text="@string/bank_city_title" />
 
                 <TextView
                     android:id="@+id/text_view_bank_city"
@@ -225,7 +244,9 @@
                     android:textIsSelectable="true"
                     tools:text="Hjørring" />
 
-                <TextView android:text="@string/url" />
+                <TextView
+                    android:id="@+id/text_view_bank_url_title"
+                    android:text="@string/bank_url_title" />
 
                 <TextView
                     android:id="@+id/text_view_bank_url"
@@ -236,7 +257,9 @@
                     android:textIsSelectable="true"
                     tools:text="www.jyskebank.dk" />
 
-                <TextView android:text="@string/phone" />
+                <TextView
+                    android:id="@+id/text_view_bank_phone_title"
+                    android:text="@string/bank_phone_title" />
 
                 <TextView
                     android:id="@+id/text_view_bank_phone"
@@ -246,6 +269,18 @@
                     android:textAlignment="textEnd"
                     android:textIsSelectable="true"
                     tools:text="+4589893300" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/button_copy"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="40dp"
+                    android:layout_columnSpan="2"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_marginTop="15dp"
+                    android:text="@string/copy_to_clipboard"
+                    app:strokeColor="?attr/colorPrimary"
+                    app:strokeWidth="2dp" />
             </GridLayout>
         </ScrollView>
 

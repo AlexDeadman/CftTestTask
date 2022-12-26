@@ -1,9 +1,13 @@
 package ru.alexdeadman.cfttesttask.ui.binmetadata
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
 import android.os.Bundle
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.ArrayAdapter
+import android.widget.TextView
 import androidx.appcompat.widget.TooltipCompat
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
@@ -38,11 +42,10 @@ class BinMetadataFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         setupMenu()
-
         collectHistoryState()
-        collectBinMetadataState()
 
         binding.apply {
+
             autoCompleteTextViewBin.apply {
                 setOnEditorActionListener { _, _, _ ->
                     if (!text.isNullOrBlank() && """\d{4,}""".toRegex().matches(text)) {
@@ -71,6 +74,40 @@ class BinMetadataFragment : Fragment() {
                 textViewPrepaidTitle to R.string.prepaid_desc,
             ).forEach {
                 TooltipCompat.setTooltipText(it.first, getString(it.second))
+            }
+
+            val fieldTextViewsList = listOf(
+                textViewSchemeTitle to textViewScheme,
+                textViewBrandTitle to textViewBrand,
+                textViewTypeTitle to textViewType,
+                textViewPrepaidTitle to textViewPrepaid,
+                textViewNumberLengthTitle to textViewNumberLength,
+                textViewNumberLuhnTitle to textViewNumberLuhn,
+                textViewCountryNameTitle to textViewCountryName,
+                textViewCountryFlagTitle to textViewCountryFlag,
+                textViewCountryLatitudeTitle to textViewCountryLatitude,
+                textViewCountryLongitudeTitle to textViewCountryLongitude,
+                textViewBankNameTitle to textViewBankName,
+                textViewBankCityTitle to textViewBankCity,
+                textViewBankUrlTitle to textViewBankUrl,
+                textViewBankPhoneTitle to textViewBankPhone,
+            )
+
+            collectBinMetadataState(fieldTextViewsList.map { it.second })
+
+            val clipboardManager =
+                requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+
+            buttonCopy.setOnClickListener {
+                clipboardManager.setPrimaryClip(
+                    ClipData.newPlainText(
+                        getString(R.string.bin_metadata),
+                        fieldTextViewsList.joinToString("\n") {
+                            "${it.first.text}: ${it.second.text}"
+                        }
+                    )
+                )
+                showToast(R.string.copied)
             }
         }
     }
@@ -130,7 +167,7 @@ class BinMetadataFragment : Fragment() {
         }
     }
 
-    private fun collectBinMetadataState() {
+    private fun collectBinMetadataState(textViewList: List<TextView>) {
         binding.apply {
             binMetadataViewModel.binMetadataStateFlow
                 .collectOnLifecycle(
@@ -145,21 +182,23 @@ class BinMetadataFragment : Fragment() {
                         }
                         is BinMetadataState.Loaded -> {
                             state.result.let { bmt ->
-                                listOf(
-                                    textViewScheme to bmt.scheme?.uppercaseFirstChar(),
-                                    textViewBrand to bmt.brand,
-                                    textViewType to bmt.type?.uppercaseFirstChar(),
-                                    textViewPrepaid to bmt.prepaid?.toYesOrNo(),
-                                    textViewNumberLength to bmt.number?.length?.toString(),
-                                    textViewNumberLuhn to bmt.number?.luhn?.toYesOrNo(),
-                                    textViewCountryName to bmt.country?.name,
-                                    textViewCountryFlag to bmt.country?.emoji,
-                                    textViewCountryLatitude to bmt.country?.latitude?.toString(),
-                                    textViewCountryLongitude to bmt.country?.longitude?.toString(),
-                                    textViewBankName to bmt.bank?.name,
-                                    textViewBankCity to bmt.bank?.city,
-                                    textViewBankUrl to bmt.bank?.url,
-                                    textViewBankPhone to bmt.bank?.phone,
+                                textViewList.zip(
+                                    listOf(
+                                        bmt.scheme?.uppercaseFirstChar(),
+                                        bmt.brand,
+                                        bmt.type?.uppercaseFirstChar(),
+                                        bmt.prepaid?.toYesOrNo(),
+                                        bmt.number?.length?.toString(),
+                                        bmt.number?.luhn?.toYesOrNo(),
+                                        bmt.country?.name,
+                                        bmt.country?.emoji,
+                                        bmt.country?.latitude?.toString(),
+                                        bmt.country?.longitude?.toString(),
+                                        bmt.bank?.name,
+                                        bmt.bank?.city,
+                                        bmt.bank?.url,
+                                        bmt.bank?.phone,
+                                    )
                                 ).forEach {
                                     it.first.text = it.second ?: "—"
                                 }
